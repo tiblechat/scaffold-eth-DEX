@@ -59,7 +59,9 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+//const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
+const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -263,9 +265,12 @@ function App(props) {
   // const TokenToEthSwapEvents = useEventListener(readContracts, "DEX", "TokenToEthSwap", 1);
   // // console.log("🎈-->⟠ TokenToEthSwapEvents:", TokenToEthSwapEvents);
   // const LiquidityProvidedEvents = useEventListener(readContracts, "DEX", "LiquidityProvided", 1);
-  // // console.log("➕ LiquidityProvidedEvents:", LiquidityProvidedEvents);
+  // console.log("➕ LiquidityProvidedEvents:", LiquidityProvidedEvents);
   // const LiquidityRemovedEvents = useEventListener(readContracts, "DEX", "LiquidityRemoved", 1);
   // // console.log("➖ LiquidityRemovedEvents:", LiquidityRemovedEvents);
+
+  const BalloonApprovedEvents = useEventListener(readContracts, "Balloons", "Approval",localProvider, 1);
+  console.log("🎈 BalloonApprovedEvents:", BalloonApprovedEvents);
 
   return (
     <div className="App">
@@ -365,7 +370,7 @@ function App(props) {
             localProvider={localProvider}
             mainnetProvider={mainnetProvider}
             startBlock={1}
-          />
+          /> 
 
           <Events
             contracts={readContracts}
@@ -375,8 +380,16 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             startBlock={1}
           />
+          <Events
+            contracts={readContracts}
+            contractName="Balloons"
+            eventName="Approval"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
         </Route>
-        }
+        
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components

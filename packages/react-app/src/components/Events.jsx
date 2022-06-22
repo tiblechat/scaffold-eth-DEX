@@ -30,8 +30,10 @@ export default function Events({ contracts, contractName, eventName, localProvid
         <br />
         {eventName === "EthToTokenSwap"
           ? " ⟠ -->🎈 Address | Trade | AmountIn | AmountOut"
-          : eventName === "TokenToEthSwap"
-          ? "🎈-->⟠ Address | Trade | AmountOut | AmountIn"
+          : eventName === "LiquidityProvided"
+          ? "➕ Address | Liquidity Minted | Eth In | Balloons In"
+          : eventName === "Approval"
+          ? "🎈-->⟠ owner | spender | value"
           : eventName === "LiquidityProvided"
           ? "➕ Address | Liquidity Minted | Eth In | Balloons In"
           : "➖ Address | Liquidity Withdrawn | ETH out | Balloons Out "}
@@ -40,18 +42,48 @@ export default function Events({ contracts, contractName, eventName, localProvid
         bordered
         dataSource={events}
         renderItem={item => {
+
+          console.log(item.eventName);
+        if (eventName === "Approval")
+        {
+          return ( <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
+                     <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                     <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+          
+                     <TokenBalance balance={item.args[2]} provider={localProvider} />
+                   </List.Item>);
+        }
+        else
+        {
           return (
-            <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
-              <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              {item.args[1].toString().indexOf("E") == -1 ? (
-                <TokenBalance balance={item.args[1]} provider={localProvider} />
-              ) : (
-                `${item.args[1].toString()}`
-              )}
-              <TokenBalance balance={item.args[2]} provider={localProvider} />
-              <TokenBalance balance={item.args[3]} provider={localProvider} />
-            </List.Item>
-          );
+          <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
+          <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+          {item.args[1].toString().indexOf("E") == -1 ? (
+            <TokenBalance balance={item.args[1]} provider={localProvider} />
+          ) : (
+            `${item.args[1].toString()}`
+          )}
+          <TokenBalance balance={item.args[2]} provider={localProvider} />
+          <TokenBalance balance={item.args[3]} provider={localProvider} />
+        </List.Item>
+);
+        }
+
+
+
+// if (item.eventName === "Approval")
+// {
+//   resu =   <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
+//           <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+//           <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+
+//           <TokenBalance balance={item.args[2]} provider={localProvider} />
+//         </List.Item>;
+// }
+
+//           return ( 
+//            resu
+//           );
         }}
       />
     </div>
